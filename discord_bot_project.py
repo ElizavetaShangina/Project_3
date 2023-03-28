@@ -36,7 +36,7 @@ class USER(commands.Cog):
             for i in result:
                 if i[0] == login:
                     if i[1] == password:
-                        self.level = cur.execute(f"""SELECT Level FROM Levels WHERE Login = '{login}'""").fetchall()
+                        self.level = int(cur.execute(f"""SELECT Level FROM Levels WHERE Login = '{login}'""").fetchall()[0][0])
                         self.log_in = True
                         self.login = login
                         await ctx.send('Поздравляем, вы успешно авторизовались. \n'
@@ -50,7 +50,7 @@ class USER(commands.Cog):
                                'Попробуйте еще раз или создайте новую учетную запись.')
                 return
         elif operation == 'up':
-            cur.execute(f"""INSERT INTO Users (Login, Password) VALUES ('{login}', {password})""").fetchall()
+            cur.execute(f"""INSERT INTO Users (Login, Password) VALUES ('{login}', '{password}')""").fetchall()
             con.commit()
             con.close()
             self.log_in = True
@@ -65,7 +65,7 @@ class USER(commands.Cog):
 
     @commands.command(name='level')
     async def set_level(self, ctx, level):
-        if level not in [1, 2, 3]:
+        if int(level) not in [1, 2, 3]:
             await ctx.send(f'Необходимо выбрать один из трех уровней сложности. \n'
                            f'Для этого введите "/level 1", "/level 2" или "/level 3"')
             return
@@ -74,11 +74,11 @@ class USER(commands.Cog):
             cur = con.cursor()
             result = cur.execute(f"""SELECT * FROM Levels""").fetchall()
             set_level = False
-            self.level = level
+            self.level = int(level[0])
             for i in result:
                 if i[0] == self.login:
                     set_level = True
-                    cur.execute(f"UPDATE Levels SET Level = {level} WHERE Login = '{self.login}'")
+                    cur.execute(f"UPDATE Levels SET Level = {self.level} WHERE Login = '{self.login}'")
                     con.commit()
             if not set_level:
                 cur.execute(f"""INSERT INTO Levels (Login, Level) VALUES ('{self.login}', {level})""").fetchall()
@@ -89,6 +89,7 @@ class USER(commands.Cog):
             await ctx.send('Для выбора уровня сложности необходимо авторизоваться.')
         return
 
+    @commands.command(name='maze')
     async def maze(self, ctx):
         if self.login:
             if self.level in [1, 2, 3]:
@@ -101,7 +102,7 @@ class USER(commands.Cog):
 
 
 bot = commands.Bot(command_prefix='/', intents=intents)
-TOKEN = "MTA5MDI2ODQxODg1NjQ2NDUxNg.GNEP5w.J01aFHCNg-SBxmdppRBb0G9ulPFxadmCe3OHhI"
+TOKEN = "BOT_TOKEN"
 
 
 async def main():
