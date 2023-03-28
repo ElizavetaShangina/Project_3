@@ -1,0 +1,53 @@
+form.load_file {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 450px;
+    background-color: #FFFFFF;
+    border: 2px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.center {
+    text-align: center;
+}
+
+.bold {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.oblique {
+    font-style: oblique;
+}
+
+.line {
+    text-decoration: underline;
+    text-decoration-style: solid;
+}
+
+gray {
+    color: SlateGrey;
+    padding-left: 20px;
+}
+
+.special {
+    color: lightgrey;
+}
+
+.left {
+    float: left;
+}
+.right {
+    text-align: right;
+    color: gray;
+    font-size: 20px;
+}
+
+th {
+    font-weight: normal;
+}

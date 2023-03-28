@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
+    <title>{{title}}</title>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-light bg-light">
+        <h4 class="navbar-brand">Лабиринт</h4>
+        <h4 class="center">Здесь весело!</h4>
+            <p>
+                {% if func == 0 %}
+                <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
+                {% elif func == 1 %}
+                <a class="btn btn-success" href="/login">Войти</a>
+                {% else %}
+                <a class="bold">{{ current_user.name }}&nbsp;&nbsp;&nbsp;</a>
+                <a class="btn btn-danger" href="/logout">Выйти</a>
+                {% endif %}
+            </p>
+    </nav>
+</header>
+<main role="main" class="container">
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

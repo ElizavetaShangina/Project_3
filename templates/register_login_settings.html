@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{% if func == 0 %}Авторизация{% elif func == 1 %}Регистрация{% else %}Настройки{% endif %}</h1>
+<br>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    {% for field in form if field.name not in ('csrf_token', "enter", "checkbox") %}
+        <p>
+            {{ field.label }}<br>
+            {{ field(class="form-control", type=field.name) }}<br>
+            {% for error in field.errors %}
+                <p class="alert alert-danger" role="alert">
+                    {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+    {% endfor %}
+    {% if func == 0 %}
+    <p>{{ form.remember(type="checkbox") }} {{ form.remember.label }}</p>
+    {% endif %}
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+    {{message}}
+</form>
+{% endblock %}
