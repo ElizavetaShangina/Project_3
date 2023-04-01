@@ -13,7 +13,6 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, unique=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String)
-    hardness = sqlalchemy.Column(sqlalchemy.String, default="Средне")
     reviews = orm.relationship("Review", back_populates="user")
 
     def set_password(self, password):
