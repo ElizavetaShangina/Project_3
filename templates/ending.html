@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <a class="center">
+    {% for i in range(3) %}<br>{% endfor %}
+    <h4>{{ ending.text }}</h4>
+    {% for i in range(3) %}<br>{% endfor %}
+        <p class="center"><img src="{{ url_for('static', filename=ending.path_to_picture) }}"></p>
+    </a>
+    <h4>Ваш рейтинг составляет {{ rating }}</h4><br>
+        <div>Ваш комментарий:</div>
+        <p>{{ form.comment(class="form-control", type="textarea") }}</p>
+        {% for error in form.comment.errors %}
+            <p class="alert alert-danger" role="alert">
+                {{ error }}
+            </p>
+        {% endfor %}
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {% for review in reviews %}
+    <br>
+    <div class="col-md6 border rounded">
+        <div style="color: gray;">Написано под концовкой "{{ review.ending.name }}"</div>
+        <div style="display: inline-block;">
+            <a>От </a><a style="font-weight: bold;">{{review.user.name}}</a><a>:</a>
+        </div>
+        <div class="width">{{ review.text }}</div>
+    </div>
+    {% endfor %}
+</form>
+{% endblock %}

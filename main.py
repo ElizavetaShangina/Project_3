@@ -5,6 +5,7 @@ from flask_login import LoginManager, login_user, current_user, login_required, 
 from forms.user import LoginForm, RegisterForm, make_settings_form
 from flask_restful import reqparse, abort, Api, Resource
 from data import users_resource
+from data import ending_api
 
 app = Flask(__name__)
 api = Api(app)
@@ -18,9 +19,14 @@ def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
 
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+
 def main():
     db_session.global_init("db/blogs.db")
-    api.add_resource(users_resource.UsersListResource, '/users')
+    app.register_blueprint(ending_api.blueprint)
     app.run()
 
 

@@ -10,6 +10,7 @@ form.load_file {
 
 .center {
     text-align: center;
+    align: center;
 }
 
 .bold {
@@ -44,10 +45,12 @@ gray {
 }
 .right {
     text-align: right;
-    color: gray;
-    font-size: 20px;
 }
 
 th {
     font-weight: normal;
+}
+
+.container {
+    overflow: hidden;
 }
