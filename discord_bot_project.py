@@ -565,7 +565,7 @@ class USER(commands.Cog):
         if self.death_reason:
             with open('data\\User_data.txt', mode='w') as f:
                 f.write(' '.join([self.login, self.death_reason]))
-            url = 'https://7a1f-188-242-11-43.eu.ngrok.io/login'
+            url = f'https://3141-188-242-11-43.eu.ngrok.io/ending/{self.death_reason}/{self.login}'
             await ctx.send('', components=[disnake.ui.Button(label="Результаты", url=url)])
             await ctx.send('Для того чтобы еще раз пройти лабиринт введите "/sign in Ваш логин Ваш пароль". \n'
                            'Если вы хотите пройти лабиринт под именем уже существующего пользователя, этого будет достаточно. \n'
@@ -632,7 +632,7 @@ class USER(commands.Cog):
         return
 
 bot = commands.Bot(command_prefix='/', intents=disnake.Intents.all())
-TOKEN = "bot token"
+TOKEN = "MTA5MDI2ODQxODg1NjQ2NDUxNg.GKrv71.dGvtU4sHxRhzMRa4VsWtUJk9EjFu8nY8tep2s4"
 
 @bot.event
 async def on_member_join(member):
