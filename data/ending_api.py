@@ -16,7 +16,7 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route('/ending', methods=["GET", "POST"])
+@blueprint.route('/ending', methods=["POST"])
 def get_ending():
     dbs = db_session.create_session()
     args = ending_parser.parse_args()
