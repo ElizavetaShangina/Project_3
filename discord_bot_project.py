@@ -1,7 +1,6 @@
 import sqlite3
 import disnake
 from disnake.ext import commands
-from typing import Optional
 
 level = -1
 
@@ -140,7 +139,7 @@ class USER(commands.Cog):
             result = cur.execute(f"""SELECT * FROM Users""").fetchall()
             for i in result:
                 if i[0] == login:
-                    if i[1] == password:
+                    if str(i[1]) == password:
                         self.log_in = True
                         self.login = login
                         await ctx.send(f'Вы успешно авторизовались.')
@@ -182,7 +181,7 @@ class USER(commands.Cog):
                           'дверце сейфа. Взявшись за ручку, вы медлите еще буквально мгновение и открываете дверцу. '
                           'Раздается выстрел. Прежде, чем ваши глаза закроются навсегда, вы понимаете, что ваш квест '
                           'завершен, а сейф был лишь очередной ловушкой создателей...')
-                self.death_reason = 'сейф (взломан)'
+                self.death_reason = 'Сейф'
             elif self.attempt_number == 0:
                 await ctx.send('Ноль. НОЛЬ! Попытки кончились, а вы так и не отгадали пароль! Надежда еще теплится в вашем '
                           'сознании, вы пробуете еще одну комбинацию, и еще одну... Но все тщетно! В какой-то момент, в '
@@ -192,7 +191,7 @@ class USER(commands.Cog):
                           'Через какое-то время вы дошли до двери. Подергав ручку, вы понимаете, что дверь заперта. Вы '
                           'разражаетесь безумным смехом - вы заперты в этом коридоре... заперты навечно. Ваша судьба '
                           'очевидна, как скоро бы она не наступила, и на этом ваш квест завершен.')
-                self.death_reason = 'сейф (не взломан)'
+                self.death_reason = 'С сейфом навсегда'
             if self.death_reason:
                 ctx.send('Для продолжения введите "/maze"')
             return
@@ -230,7 +229,7 @@ class USER(commands.Cog):
                     "Озираетесь по сторонам, но вокруг лишь пустыня... "
                     "Оборачиваетесь и видите, что лабиринт закрыт и назад пути нет. "
                     "Ваш конец очевиден, сожалеем, но для вас квест завершен.")
-                self.death_reason = 'пустыня'
+                self.death_reason = 'Пустыня'
             elif direction_1.value == 'налево':
                 await ctx.send(
                     "Поколебавшись, вы решаете не повторять свой выбор и направляетесь налево. "
@@ -245,7 +244,7 @@ class USER(commands.Cog):
                     "Вдруг чудовище начинает приближаться к вам. "
                     "Вы в ужасе бросаетесь бежать, но вскоре оно вас нагоняет. "
                     "Сожалеем, но на этом ваш квест завершен.")
-                self.death_reason = 'чудовище'
+                self.death_reason = 'Неудачный привал'
 
         elif direction.value == 'прямо':
             direction_2 = TwoDirectionButtons()
@@ -273,7 +272,7 @@ class USER(commands.Cog):
                     "Вы осознаете свою ошибку - ягоды были ядовитыми... "
                     "Вас начинает бить конвульсия, изо рта идет пена... "
                     "В таком виде вы явно не способны продолжить свое путешествие. Сожалеем, но ваш квест завершен.")
-                self.death_reason = 'ядовитые ягоды'
+                self.death_reason = 'Вкусные ягоды'
 
         elif direction.value == 'налево':
             direction_3 = TwoDirectionButtons()
@@ -293,7 +292,7 @@ class USER(commands.Cog):
                     ' лежащий на дороге, но вместо того, чтобы удариться о землю, вы продолжаете лететь вниз'
                     ' и вниз... лишь через полторы минуты вы наконец достигаете земли, но такое приземление '
                     'оказалось слишком жестким для ваших костей. Сожалеем, но на этом ваш квест завершен.')
-                self.death_reason = 'падение с высоты'
+                self.death_reason = 'Подлый камень'
             elif direction_3.value == 'налево':
                 if level == 1:
                     await ctx.send(
@@ -307,7 +306,7 @@ class USER(commands.Cog):
                         "медленно открываться... Вы застыли в изумлении - из-за ворот бьёт ослепляющий белый "
                         "свет. Неужели это конец квеста? \n"
                         "Поздравляем, вы нашли выход из этого лабиринта бесконечных случайностей!")
-                    self.death_reason = 'win'
+                    self.death_reason = 'Огромные врата'
                 elif level == 2:
                     await ctx.send(
                         "Вы решаете снова идти налево. Что ж, будь, что будет. "
@@ -321,7 +320,7 @@ class USER(commands.Cog):
                             "Он подошел! Врата жутко заскрипели и начали медленно открываться... "
                             "Вы застыли в изумлении - из-за ворот бьёт ослепляющий белый свет. Неужели это конец квеста? \n"
                             "Поздравляем, вы нашли выход из этого лабиринта бесконечных случайностей!")
-                        self.death_reason = 'win'
+                        self.death_reason = 'Огромные врата'
                     else:
                         await ctx.send(
                             'Треугольник и квадрат... что должно выступать в роли ключа? В вашей голове мелькает '
@@ -341,9 +340,8 @@ class USER(commands.Cog):
                             'вы достаете их из рюкзака и... О, чудо! Они подошли! Врата жутко заскрипели и начали '
                             'медленно открываться... Вы застыли в изумлении - из-за ворот бьёт ослепляющий белый '
                             'свет. Неужели это конец квеста?\n'
-                            'Поздравляем, вы нашли выход из этого лабиринта бесконечных случайностей!'
-                            '\nДля продолжения введите "/maze"')
-                        self.death_reason = 'win'
+                            'Поздравляем, вы нашли выход из этого лабиринта бесконечных случайностей!')
+                        self.death_reason = 'Огромные врата'
                     elif self.triangle:
                         await ctx.send(
                             'Вы вспоминаете, что в вашем рюкзаке есть артефакт треугольной формы. Вдруг он подойдет?'
@@ -362,7 +360,6 @@ class USER(commands.Cog):
                             'догадка, что при прохождении квеста вы должны были найти какие-то ключи, которые помогли '
                             'бы вам сейчас открыть дверь... \n'
                             'Вы можете вернуться в начало игры, введя "/maze"')
-        print(self.death_reason)
         if self.death_reason:
             await ctx.send('Для продолжения введите "/maze"')
 
@@ -379,6 +376,7 @@ class USER(commands.Cog):
             if isinstance(child, disnake.ui.Button):
                 child.disabled = True
         await message.edit(view=door_1)
+
         if door_1.value == '1':
             door_2 = ThreeDoorButtons()
             message = await ctx.send(
@@ -396,13 +394,13 @@ class USER(commands.Cog):
                     'Вы открываете следующую дверь. Из помещения, скрывавшегося за ней, слышится угрожающее '
                     'рычание... Кажется, вы потревожили местных охранников. Сожалеем, но вас растерзала стая '
                     'голодных псов. На этом ваш квест завершен.')
-                self.death_reason = 'псы'
+                self.death_reason = 'Псы'
             elif door_2.value == '2':
                 await ctx.send(
                     'Вы открываете следующую дверь и делаете несколько шагов вперед. Дверь за вами захлопывается, '
                     'лишая последнего источника света. Все, что вам остается - идти вперед и надеяться, что коридор '
                     'не бесконечен...')
-                self.death_reason = 'бесконечный коридор'
+                self.death_reason = 'Бесконечный коридор'
             elif door_2.value == '3':
                 if not self.stone:
                     await ctx.send(
@@ -422,6 +420,7 @@ class USER(commands.Cog):
                         'все же решаете посмотреть, что скрывается за дверью. Странно, но вы вновь оказываетесь в '
                         'первой комнате...')
                 await ctx.send('Для продолжения введите "/maze"')
+
         elif door_1.value == '2':
             door_3 = TwoDoorButtons()
             message = await ctx.send(
@@ -436,13 +435,14 @@ class USER(commands.Cog):
                 await ctx.send(
                     'Вы открываете следующую дверь и чувствуете сильный запах миндаля. '
                     'Что это? Неужели, циан?')
-                self.death_reason = 'циан'
+                self.death_reason = 'Циан'
             elif door_3.value == '2':
                 await ctx.send(
                     'Вы открываете следующую дверь и, не глядя, делаете шаг вперед. Дверь за вами захлопывается, а '
                     'вы оказываетесь на краю обрыва. От бесконечной пропасти вас отделяет лишь несколько сантиметров'
                     ' земли. Ваша судьба очевидна и, как скоро бы она не наступила, ваш квест завершен.')
-                self.death_reason = 'обрыв'
+                self.death_reason = 'Обрыв'
+
         elif door_1.value == '3':
             await ctx.send(
                 'За следующей дверью оказался коридор. Вы решаетесь посмотреть, куда же он ведет. Проходит какое-то'
@@ -494,7 +494,7 @@ class USER(commands.Cog):
                     'Конечно, сабля! Схватив ее в правую руку, вы смело направляетесь к воину. Увы, это был неверный '
                     'ход - в первую же секунду боя охранник выбивает из ваших рук оружие. Ваша судьба очевидна. '
                     'Сожалеем, но на этом ваш квест завершен.')
-                self.death_reason = 'воин'
+                self.death_reason = 'Конечно, сабля'
             elif weapon.value == '2':
                 water = TwoDoorButtons()
                 message = await ctx.send(
@@ -520,7 +520,7 @@ class USER(commands.Cog):
                         'Напившись, вы отправляетесь к статуе. Но, к сожалению, до нее вы не дошли. Вас неожиданно '
                         'скручивает от сильной боли. Видимо, вода все-таки была отравлена... Сожалеем, но на этом'
                         ' ваш квест завершен.')
-                    self.death_reason = 'вода'
+                    self.death_reason = 'Вода'
                 elif water.value == '2':
                     self.triangle = True
                     to_continue = TwoDoorButtons()
@@ -549,22 +549,26 @@ class USER(commands.Cog):
                 'вам нужно пройти мимо воина, но вас это не останавливает, и вы направляетесь к лестнице. Сожалеем,'
                 ' но это был неверный выбор - воин решает, что вы вновь посягнули на его сокровище, и убивает вас. '
                 'На этом ваш квест завершен.')
-            self.death_reason = 'побег'
+            self.death_reason = 'Побег'
         if self.death_reason:
             await ctx.send('Для продолжения введите "/maze"')
 
     @commands.command(name='maze')
     async def maze(self, ctx):
         global level
-        if self.death_reason == 'win':
+        if self.death_reason == 'Огромные врата':
             con = sqlite3.connect('Discord_maze.db')
             cur = con.cursor()
             cur.execute(f"""UPDATE Passed_Levels SET Level_{str(level)} = True WHERE Login = '{self.login}'""").fetchall()
             con.commit()
             con.close()
-        if self.death_reason:
+            await ctx.send('К сожалению, ваш квест завершен. Результаты игры можно будет в будущем посмотреть по ссылке.')
+        elif self.death_reason:
             await ctx.send(f'Причина вашей смерти: {self.death_reason}. К сожалению, ваш квест завершен. '
                            'Результаты игры можно будет в будущем посмотреть по ссылке.')
+        if self.death_reason:
+            with open('data/User_data.txt', mode='w') as f:
+                f.write(' '.join([self.login, self.death_reason]))
             await ctx.send('Для того чтобы еще раз пройти лабиринт введите "/sign in Ваш логин Ваш пароль". \n'
                            'Если вы хотите пройти лабиринт под именем уже существующего пользователя, этого будет достаточно. \n'
                            'Если вы хотите создать новую учетную запись, введите "/sign up Ваш логин Ваш пароль".')
@@ -629,9 +633,8 @@ class USER(commands.Cog):
             await ctx.send('Для начала прохождения необходимо авторизоваться.')
         return
 
-
 bot = commands.Bot(command_prefix='/', intents=disnake.Intents.all())
-TOKEN = "Token"
+TOKEN = "bot token"
 
 @bot.event
 async def on_member_join(member):
@@ -642,6 +645,7 @@ async def on_member_join(member):
 
 @bot.event
 async def on_ready():
+    print(f'Logged in as {bot.user} (ID: {bot.user.id}, Chat: {bot.guilds})')
     print('Лабиринт закручен, ключи перепрятаны')
 
 bot.add_cog(USER(bot))
