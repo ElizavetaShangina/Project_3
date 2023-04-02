@@ -5,9 +5,11 @@ from flask_login import LoginManager, login_user, current_user, login_required, 
 from forms.user import LoginForm, RegisterForm, make_settings_form
 from flask_restful import reqparse, abort, Api, Resource
 from data import users_resource
+from flask_ngrok import run_with_ngrok
 from data import ending_api
 
 app = Flask(__name__)
+run_with_ngrok(app)
 api = Api(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()

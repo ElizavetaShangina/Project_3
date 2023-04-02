@@ -1,5 +1,5 @@
 import flask
-from flask import render_template
+from flask import render_template, abort
 
 from .resources_parsers import ending_parser
 from . import db_session
@@ -16,13 +16,12 @@ blueprint = flask.Blueprint(
 )
 
 
-@blueprint.route('/ending', methods=["POST"])
+@blueprint.route('/ending', methods=["GET", "POST"])
 def get_ending():
     dbs = db_session.create_session()
-    args = ending_parser.parse_args()
-    user = dbs.query(User).get(args["user_id"])
-    ending = dbs.query(Ending).get(args["ending_id"])
-    rating = args["rating"]
+    data = open("data/User_data.txt", encoding="utf-8").read().split()
+    user = dbs.query(User).filter(User.name == data[0]).first()
+    ending = dbs.query(Ending).filter(Ending.name == data[1]).first()
     form = EndingForm()
     if form.validate_on_submit():
         review = Review(
@@ -32,23 +31,25 @@ def get_ending():
         )
         dbs.add(review)
         dbs.commit()
-    return render_template("ending.html", rating=rating, user=user, ending=ending,
+    return render_template("ending.html", user=user, ending=ending,
                            reviews=dbs.query(Review).all(), form=form)
 
 
-# @blueprint.route("/ending/<int:ending_id>/<int:user_id>/<float:rating>", methods=["GET", "POST"])
-# def get_ending_2(ending_id, user_id, rating):
-#     dbs = db_session.create_session()
-#     user = dbs.query(User).get(user_id)
-#     ending = dbs.query(Ending).get(ending_id)
-#     form = EndingForm()
-#     if form.validate_on_submit():
-#         review = Review(
-#             ending_id=ending_id,
-#             user_id=user_id,
-#             text=form.comment.data
-#         )
-#         dbs.add(review)
-#         dbs.commit()
-#     return render_template("ending.html", rating=rating, user=user, ending=ending,
-#                            reviews=dbs.query(Review).all(), form=form)
+@blueprint.route("/ending/<string:ending_name>/<string:user_name>", methods=["GET", "POST"])
+def get_ending_2(ending_name, user_name):
+    dbs = db_session.create_session()
+    user = dbs.query(User).filter(User.name == user_name).first()
+    ending = dbs.query(Ending).filter(Ending.name == ending_name).first()
+    if not ending or not user:
+        abort(400)
+    form = EndingForm()
+    if form.validate_on_submit():
+        review = Review(
+            ending_id=ending_id,
+            user_id=user_id,
+            text=form.comment.data
+        )
+        dbs.add(review)
+        dbs.commit()
+    return render_template("ending.html", user=user, ending=ending,
+                           reviews=dbs.query(Review).all(), form=form)

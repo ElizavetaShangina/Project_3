@@ -9,7 +9,6 @@
     {% for i in range(3) %}<br>{% endfor %}
         <p class="center"><img src="{{ url_for('static', filename=ending.path_to_picture) }}"></p>
     </a>
-    <h4>Ваш рейтинг составляет {{ rating }}</h4><br>
         <div>Ваш комментарий:</div>
         <p>{{ form.comment(class="form-control", type="textarea") }}</p>
         {% for error in form.comment.errors %}
