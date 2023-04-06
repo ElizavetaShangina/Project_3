@@ -1,8 +1,15 @@
 import sqlite3
 import disnake
 from disnake.ext import commands
+from main import db_session
+from data.tables.users import User
+from data.tables.combos import Combo
+from data.tables.passings import Passing
+from random import choices, randint
+from data.tables.endings import Ending
 
 level = -1
+
 
 class ThreeDirectionButtons(disnake.ui.View):
     def __init__(self):
@@ -29,6 +36,7 @@ class ThreeDirectionButtons(disnake.ui.View):
         await inter.edit_original_response()
         self.value = 'направо'
         self.stop()
+
 
 class TwoDirectionButtons(disnake.ui.View):
     def __init__(self):
@@ -76,6 +84,7 @@ class ThreeDoorButtons(disnake.ui.View):
         self.value = "3"
         self.stop()
 
+
 class TwoDoorButtons(disnake.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -95,6 +104,7 @@ class TwoDoorButtons(disnake.ui.View):
         self.value = "2"
         self.stop()
 
+
 class Dropdown(disnake.ui.StringSelect):
     def __init__(self):
         options = [
@@ -108,6 +118,7 @@ class Dropdown(disnake.ui.StringSelect):
         global level
         level = int(self.values[0].split()[1])
         await inter.response.send_message(f'Ваш уровень: {self.values[0]}. Для начала прохождения введите "/maze"')
+
 
 class DropdownView(disnake.ui.View):
     def __init__(self):
@@ -133,25 +144,25 @@ class USER(commands.Cog):
     async def sign(self, ctx, operation, login, password):
         self.log_in = False
         self.login = ''
-        con = sqlite3.connect('data\\Discord_maze.db')
-        cur = con.cursor()
-        if operation == 'in':
-            result = cur.execute(f"""SELECT * FROM Users""").fetchall()
-            for i in result:
-                if i[0] == login:
-                    if str(i[1]) == password:
-                        self.log_in = True
-                        self.login = login
-                        await ctx.send(f'Вы успешно авторизовались.')
-                    else:
-                        await ctx.send('Ваш пароль неверен. Попробуйте еще раз или создайте новую учетную запись.')
-                        return
-            if not self.log_in:
+        if operation == "in":
+            db_session.global_init("db/blogs.db")
+            dbs = db_session.create_session()
+            user = dbs.query(User).filter(User.name == login).first()
+            if user:
+                if user.check_password(password):
+                    self.log_in = True
+                    self.login = login
+                    await ctx.send(f'Вы успешно авторизовались.')
+                else:
+                    await ctx.send(
+                        'Ваш пароль неверен. Попробуйте еще раз или создайте новую учетную запись.')
+                    return
+            else:
                 await ctx.send('Похоже, у нас нет данных об учетной записи с таким логином. '
                                'Попробуйте еще раз или создайте новую учетную запись.')
         elif operation == 'up':
             cur.execute(f"""INSERT INTO Users (Login, Password) VALUES ('{login}', '{password}')""").fetchall()
-            cur.execute(f"""INSERT INTO Passed_Levels (Login, Level_1, Level_2, Level_3) VALUES ('{login}', False, False, False)""").fetchall()
+            #cur.execute(f"""INSERT INTO Passed_Levels (Login, Level_1, Level_2, Level_3) VALUES ('{login}', False, False, False)""").fetchall()
             con.commit()
             con.close()
             self.log_in, self.login = True, login
@@ -557,15 +568,28 @@ class USER(commands.Cog):
     async def maze(self, ctx):
         global level
         if self.death_reason == 'Огромные врата':
-            con = sqlite3.connect('data\\Discord_maze.db')
+            con = sqlite3.connect('db\\blogs.db')
             cur = con.cursor()
-            cur.execute(f"""UPDATE Passed_Levels SET Level_{str(level)} = True WHERE Login = '{self.login}'""").fetchall()
+            #cur.execute(f"""UPDATE Passed_Levels SET Level_{str(level)} = True WHERE Login = '{self.login}'""").fetchall()
             con.commit()
             con.close()
         if self.death_reason:
-            with open('data\\User_data.txt', mode='w') as f:
-                f.write(' '.join([self.login, self.death_reason]))
-            url = f'https://3141-188-242-11-43.eu.ngrok.io/ending/{self.death_reason}/{self.login}'
+            dbs = db_session.create_session()
+            combo = Combo(
+                combo=get_unique_combo(),
+                username=self.login
+            )
+            dbs.add(combo)
+            answer = dbs.query(Ending).filter(Ending.name == self.death_reason).first()
+            print(answer)
+            passing = Passing(
+                ending_id=answer.id,
+                username=self.login
+            )
+            dbs.add(passing)
+            dbs.commit()
+            url = f'https://a4bc-188-242-11-43.eu.ngrok.io/login_user/{combo.combo}'
+            self.death_reason = None
             await ctx.send('', components=[disnake.ui.Button(label="Результаты", url=url)])
             await ctx.send('Для того чтобы еще раз пройти лабиринт введите "/sign in Ваш логин Ваш пароль". \n'
                            'Если вы хотите пройти лабиринт под именем уже существующего пользователя, этого будет достаточно. \n'
@@ -631,8 +655,10 @@ class USER(commands.Cog):
             await ctx.send('Для начала прохождения необходимо авторизоваться.')
         return
 
+
 bot = commands.Bot(command_prefix='/', intents=disnake.Intents.all())
-TOKEN = "MTA5MDI2ODQxODg1NjQ2NDUxNg.GKrv71.dGvtU4sHxRhzMRa4VsWtUJk9EjFu8nY8tep2s4"
+TOKEN = "MTA5MjA3MTA4Mzg2MTEwMjY2Mg.GjgEvB.WSOWjODH-gFHwYUqTiO_tzMYuAvG-yIHpHQxjI"
+
 
 @bot.event
 async def on_member_join(member):
@@ -641,10 +667,26 @@ async def on_member_join(member):
         to_send = f'Добро пожаловать, {member.mention}! Для начала введите "/start"'
         await guild.system_channel.send(to_send)
 
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id}, Chat: {bot.guilds})')
     print('Лабиринт закручен, ключи перепрятаны')
+
+
+def get_unique_combo():
+    dbs = db_session.create_session()
+    combo = get_combo()
+    while dbs.query(Combo).filter(Combo.combo == combo).first():
+        combo = get_combo()
+    return combo
+
+
+def get_combo():
+    return "".join(
+            choices("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!:;-=+",
+                    k=randint(10, 25)))
+
 
 bot.add_cog(USER(bot))
 bot.run(TOKEN)

@@ -1,11 +1,10 @@
 import flask
 from flask import render_template, abort
 
-from .resources_parsers import ending_parser
-from . import db_session
-from .users import User
-from .endings import Ending
-from .reviews import Review
+from data import db_session
+from data.tables.users import User
+from data.tables.endings import Ending
+from data.tables.reviews import Review
 from forms.ending import EndingForm
 
 

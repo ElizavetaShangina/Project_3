@@ -1,5 +1,5 @@
 import sqlalchemy
-from .db_session import SqlAlchemyBase
+from data.db_session import SqlAlchemyBase
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy import orm
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -14,3 +14,4 @@ class Ending(SqlAlchemyBase, SerializerMixin):
     text = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     reviews = orm.relationship("Review", back_populates="ending")
+    passings = orm.relationship("Passing", back_populates="ending")

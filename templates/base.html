@@ -15,11 +15,20 @@
     <nav class="navbar navbar-light bg-light">
         <h4 class="navbar-brand">Лабиринт</h4>
         <h4 class="center">Здесь весело!</h4>
-        <a class="bold">{{ user.name }}</a>
+        {% if current_user.is_authenticated %}
+        <p>
+            <a class="bold">{{ current_user.name }}</a>
+            <a type="button" class="btn btn-danger" href="/logout">Выйти</a>
+        </p>
+        {% elif func == 0 %}
+            <a type="button" class="btn btn-primary" href="/register">Зарегистрироваться</a>
+        {% else %}
+            <a type="button" class="btn btn-primary" href="/login">Войти</a>
+        {% endif %}
     </nav>
 </header>
 <main role="main" class="container">
-    {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 </main>
 </body>
 </html>

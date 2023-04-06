@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>Название концовки</th>
+            <th>Дата получения</th>
+            <th>Ссылка</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for passing in passings %}
+        <tr>
+            <th>{{ passing.id }}</th>
+            <th>{{ passing.ending.name }}</th>
+            <th>{{ passing.date.strftime("%X %x") }}</th>
+            <th>
+                <a type="button" class="btn btn-link" href="/passings/{{ passing.id }}">Ссылка на концовку</a>
+            </th>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

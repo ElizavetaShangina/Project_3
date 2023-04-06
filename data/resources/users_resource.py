@@ -1,9 +1,8 @@
-from flask_restful import reqparse, abort, Api, Resource
+from flask_restful import abort, Resource
 from flask import jsonify
-from .resources_parsers import users_settings_get_parser
-from .users import User
-from main import login_required, current_user
-from . import db_session
+from data.resources.resources_parsers import users_settings_get_parser
+from data.tables.users import User
+from data import db_session
 
 
 class UsersListResource(Resource):

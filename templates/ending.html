@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+<p class="left">
+{% for i in range(7) %}&nbsp;{% endfor %}<a type="button" class="btn btn-primary" href="/passings"><-- К концовкам</a>
+</p>
+<main role="main" class="container">
 <form action="" method="post">
     {{ form.hidden_tag() }}
     <a class="center">
-    {% for i in range(3) %}<br>{% endfor %}
     <h4>{{ ending.text }}</h4>
     {% for i in range(3) %}<br>{% endfor %}
         <p class="center"><img src="{{ url_for('static', filename=ending.path_to_picture) }}"></p>
@@ -28,4 +31,5 @@
     </div>
     {% endfor %}
 </form>
+</main>
 {% endblock %}

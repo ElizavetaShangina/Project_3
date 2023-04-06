@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="center">
+    <br>
+    <h4>Ссылка уже была использована или ссылка является неправильной</h4>
+    <br>
+    {% if current_user.is_authenticated %}
+    <a type="button" class="btn btn-primary" href="/logout">Войти из другого аккаунта</a>
+    <br>
+    <a type="button" class="btn btn-secondary" href="/logout">На главную страницу</a>
+    {% else %}
+    <a type="button" class="btn btn-primary" href="/login">Войти</a>
+    {% endif %}
+</div>
+{% endblock %}
