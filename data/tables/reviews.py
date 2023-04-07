@@ -15,5 +15,6 @@ class Review(SqlAlchemyBase, SerializerMixin):
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.now())
     text = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    mark = sqlalchemy.Column(sqlalchemy.Integer)
     ending = orm.relationship('Ending')
     user = orm.relationship("User")

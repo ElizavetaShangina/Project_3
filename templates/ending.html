@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p class="left">
-{% for i in range(7) %}&nbsp;{% endfor %}<a type="button" class="btn btn-primary" href="/passings"><-- К концовкам</a>
-</p>
-<main role="main" class="container">
 <form action="" method="post">
+    <div class="left">
+    <a type="button" class="btn btn-primary" href="/passings"><-- К концовкам</a>
+    </div>
+    <br><br>
     {{ form.hidden_tag() }}
     <a class="center">
     <h4>{{ ending.text }}</h4>
@@ -19,11 +19,19 @@
                 {{ error }}
             </p>
         {% endfor %}
+        <p>Ваша оценка: </p>
+        <a style="margin-left: 10%;">
+        {% for i in range(11) %}
+        <p style="width: 7.5%; display: inline-block;">{{ loop.index - 1 }}</p>
+        {% endfor %}
+        </a>
+        <p style="text-align: center;">{{ form.slider(class="slider", type="range") }}</p>
+        <br>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
         {% for review in reviews %}
     <br>
     <div class="col-md6 border rounded">
-        <div style="color: gray;">Написано под концовкой "{{ review.ending.name }}"</div>
+        <div style="color: gray;">Написано под концовкой "{{ review.ending.name }}"<span style="float: right;">{{ review.mark }}/10</span></div>
         <div style="display: inline-block;">
             <a>От </a><a style="font-weight: bold;">{{review.user.name}}</a><a>:</a>
         </div>
@@ -31,5 +39,4 @@
     </div>
     {% endfor %}
 </form>
-</main>
 {% endblock %}

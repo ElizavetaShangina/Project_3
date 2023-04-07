@@ -27,11 +27,13 @@ def get_passing(passing_id):
     user = passing.user
     ending = passing.ending
     form = EndingForm()
+    print(form.slider.data)
     if form.validate_on_submit():
         review = Review(
-            ending_id=ending_id,
-            user_id=user_id,
-            text=form.comment.data
+            ending_id=ending.id,
+            user_id=user.id,
+            text=form.comment.data,
+            mark=int(form.slider.data)
         )
         dbs.add(review)
         dbs.commit()
