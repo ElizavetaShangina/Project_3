@@ -1,13 +1,3 @@
-form.load_file {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 450px;
-    background-color: #FFFFFF;
-    border: 2px solid gray;
-    border-radius: 5px;
-    padding: 10px;
-}
-
 .slidecontainer {
   width: 100%;
 }
@@ -36,10 +26,10 @@ form.load_file {
 }
 
 .slider::-moz-range-thumb {
-  width: 25px; /* Set a specific slider handle width */
-  height: 25px; /* Slider handle height */
-  background: #04AA6D; /* Green background */
-  cursor: pointer; /* Cursor on hover */
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
+  cursor: pointer;
 }
 
 .center {
@@ -87,4 +77,21 @@ th {
 
 .container {
     overflow: hidden;
+}
+
+.btn-spec {
+    font-size: 13px;
+    color: rgba(100, 100, 100, 1);
+    letter-spacing: 1px;
+    line-height: 15px;
+    border: 2px solid rgba(100, 100, 100, 1);
+    background: transparent;
+    transition: all 0.3s ease 0s;
+    border-radius: 40px;
+}
+
+.btn-spec:hover {
+  color: #FFFFFF;
+  background: rgba(100, 100, 100, 1);
+  border: 2px solid rgba(100, 100, 100, 1);
 }

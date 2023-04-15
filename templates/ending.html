@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form action="" method="post">
-    <div class="left">
-    <a type="button" class="btn btn-primary" href="/passings"><-- К концовкам</a>
-    </div>
-    <br><br>
+<div class="left" style="margin-left: 10%; display: inline-block;">
+<a type="button" class="btn btn-primary" href="/passings"><-- К концовкам</a>
+</div>
+<br><br>
+<main role="main" class="container" style="align: center;">
+    <form action="" method="post">
     {{ form.hidden_tag() }}
     <a class="center">
     <h4>{{ ending.text }}</h4>
     {% for i in range(3) %}<br>{% endfor %}
         <p class="center"><img src="{{ url_for('static', filename=ending.path_to_picture) }}"></p>
     </a>
+        <br>
+        <hr style="border: 1px solid gray;">
         <div>Ваш комментарий:</div>
         <p>{{ form.comment(class="form-control", type="textarea") }}</p>
         {% for error in form.comment.errors %}
@@ -28,6 +31,7 @@
         <p style="text-align: center;">{{ form.slider(class="slider", type="range") }}</p>
         <br>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <hr style="border: 1px solid gray;">
         {% for review in reviews %}
     <br>
     <div class="col-md6 border rounded">
@@ -38,5 +42,7 @@
         <div class="width">{{ review.text }}</div>
     </div>
     {% endfor %}
-</form>
+    <br>
+    </form>
+</main>
 {% endblock %}

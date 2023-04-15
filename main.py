@@ -1,22 +1,20 @@
-from flask import Flask, render_template, redirect, make_response, jsonify
+from flask import Flask, render_template, redirect, make_response, jsonify, request, url_for
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from flask_restful import abort, Api
 from data import db_session
+from forms.user import LoginForm, RegisterForm
+from forms.ending import EndingForm
 from data.tables.users import User
 from data.tables.combos import Combo
-from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from forms.user import LoginForm, RegisterForm
-from flask_restful import abort, Api
-from flask_ngrok import run_with_ngrok
 from data.tables.passings import Passing
-from forms.ending import EndingForm
 from data.tables.reviews import Review
+from data.additional import bad_site, get_menu_btns
 
 app = Flask(__name__)
 api = Api(app)
-run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 from data.api import passing_api, login_api
 
@@ -28,13 +26,18 @@ def load_user(user_id):
 
 
 @app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+def not_found(_):
+    return bad_site(404, title="Такой страницы нет", message="Страница не найдена")
 
 
-@app.errorhandler(400)
-def bad_request(_):
-    return make_response(jsonify({'error': 'Bad Request'}), 400)
+@app.route("/")
+def empty():
+    return redirect("/passings")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html", title="О проекте", menu=get_menu_btns())
 
 
 def main():

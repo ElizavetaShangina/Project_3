@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main role="main" class="container">
+    <h1>{% if request.path == "/login" %}Авторизация{% else %}Регистрация{% endif %}</h1>
+    <br>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {% for field in form if field.name not in ('csrf_token', "enter", "checkbox") %}
+            <p>
+                {{ field.label }}<br>
+                {{ field(class="form-control", type=field.name) }}<br>
+                {% for error in field.errors %}
+                    <p class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </p>
+                {% endfor %}
+            </p>
+        {% endfor %}
+        {% if request.path == "/login" %}
+        <p>{{ form.remember(type="checkbox") }} {{ form.remember.label }}</p>
+        {% endif %}
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        {{message}}
+    </form>
+</main>
+{% endblock %}

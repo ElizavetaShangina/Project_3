@@ -1,15 +1,13 @@
 import flask
-from flask import render_template, abort, redirect
+from flask import render_template, redirect
 
 from data import db_session
 from data.tables.users import User
-from data.tables.endings import Ending
-from data.tables.reviews import Review
 from data.tables.passings import Passing
 from data.tables.combos import Combo
-from forms.ending import EndingForm
 from forms.user import LoginForm, RegisterForm
-from main import current_user, login_user, login_manager, logout_user
+from main import current_user, login_user, logout_user
+from data.additional import bad_site, get_menu_btns
 
 
 blueprint = flask.Blueprint(
@@ -33,22 +31,21 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register_login_settings.html', title='Регистрация',
+            return render_template('register_login.html', title='Регистрация',
                                    form=form,
-                                   message="Пароли не совпадают", func=1)
-        # func = 1 - регистрация
-        # func = 0 - авторизация
+                                   message="Пароли не совпадают", menu=get_menu_btns())
         db_sess = db_session.create_session()
         if db_sess.query(User).filter(User.name == form.name.data).first():
-            return render_template('register_login_settings.html', title='Регистрация',
+            return render_template('register_login.html', title='Регистрация',
                                    form=form,
-                                   message="Такой пользователь уже есть", func=1)
+                                   message="Такой пользователь уже есть", menu=get_menu_btns())
         user = User(name=form.name.data)
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('register_login_settings.html', title='Регистрация', form=form, func=1)
+    return render_template('register_login.html', title='Регистрация', form=form,
+                           menu=get_menu_btns())
 
 
 @blueprint.route('/login', methods=['GET', 'POST'])
@@ -61,10 +58,11 @@ def login():
             if user and user.check_password(form.password.data):
                 login_user(user, remember=form.remember.data)
                 return redirect("/passings")
-            return render_template('register_login_settings.html',
+            return render_template('register_login.html',
                                    message="Неправильный логин или пароль",
-                                   form=form, func=0)
-        return render_template('register_login_settings.html', title='Авторизация', form=form, func=0)
+                                   form=form, menu=get_menu_btns())
+        return render_template('register_login.html', title='Авторизация', form=form,
+                               menu=get_menu_btns())
     return redirect("/passings")
 
 
@@ -87,4 +85,4 @@ def log_user(combination):
                               key=lambda x: x.date, reverse=True)[0].id
         return redirect(f"/passings/{last_passing}")
     else:
-        return render_template("bad_link.html", title="Что-то пошло не так...")
+        return bad_site(message="Ссылка уже была использована или ссылка является неправильной")
