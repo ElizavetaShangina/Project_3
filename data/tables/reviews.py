@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Review(SqlAlchemyBase, SerializerMixin):
+    """Отзывы"""
     __tablename__ = 'reviews'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,

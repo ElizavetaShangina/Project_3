@@ -4,6 +4,7 @@ from random import choice
 
 
 def get_menu_btns():
+    """Возвращает кнопки для перехода между страницами"""
     address = request.path[1:]
     btns = []
     if current_user.is_authenticated:
@@ -24,6 +25,7 @@ titles = [":(", "Что-то пошло не так...", "Опять, не та�
 
 
 def bad_site(code=400, **kwargs):
+    """Сайт вместо 'bad request'"""
     add_kwargs = {}
     if "title" not in kwargs:
         add_kwargs["title"] = choice(titles)

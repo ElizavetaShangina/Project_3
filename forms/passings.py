@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, NumberRange
 
 
 class SortForm(FlaskForm):
+    """Форма для сортировки прохождений"""
     type = SelectField('Сортировать по', validators=[DataRequired()],
                        choices=["id", "дате", "названию"], default="дате")
     reverse = BooleanField("Перевернуть", default=True)

@@ -9,6 +9,7 @@ from random import choices, randint
 from data.tables.endings import Ending
 
 level = -1
+db_session.global_init("db/blogs.db")
 
 
 class ThreeDirectionButtons(disnake.ui.View):
@@ -129,6 +130,8 @@ class DropdownView(disnake.ui.View):
 class USER(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.death_reason = ""
+        self.login = ""
 
     @commands.command(name='start')
     async def start(self, ctx):
@@ -145,7 +148,6 @@ class USER(commands.Cog):
         self.log_in = False
         self.login = ''
         if operation == "in":
-            db_session.global_init("db/blogs.db")
             dbs = db_session.create_session()
             user = dbs.query(User).filter(User.name == login).first()
             if user:
@@ -161,12 +163,16 @@ class USER(commands.Cog):
                 await ctx.send('Похоже, у нас нет данных об учетной записи с таким логином. '
                                'Попробуйте еще раз или создайте новую учетную запись.')
         elif operation == 'up':
-            cur.execute(f"""INSERT INTO Users (Login, Password) VALUES ('{login}', '{password}')""").fetchall()
-            #cur.execute(f"""INSERT INTO Passed_Levels (Login, Level_1, Level_2, Level_3) VALUES ('{login}', False, False, False)""").fetchall()
-            con.commit()
-            con.close()
-            self.log_in, self.login = True, login
-            await ctx.send(f'Вы успешно зарегистрировались. Ваш логин: {self.login}')
+            dbs = db_session.create_session()
+            if dbs.query(User).filter(User.name == login).first():
+                await ctx.send(f'Такой пользователь уже зарегистрирован')
+            else:
+                user = User(name=login)
+                user.set_password(password)
+                dbs.add(user)
+                dbs.commit()
+                self.log_in, self.login = True, login
+                await ctx.send(f'Вы успешно зарегистрировались. Ваш логин: {self.login}')
         else:
             await ctx.send('Похоже, произошла ошибка. Проверьте правильность ввода операции')
             return
@@ -567,28 +573,23 @@ class USER(commands.Cog):
     @commands.command(name='maze')
     async def maze(self, ctx):
         global level
-        if self.death_reason == 'Огромные врата':
-            con = sqlite3.connect('db\\blogs.db')
-            cur = con.cursor()
-            #cur.execute(f"""UPDATE Passed_Levels SET Level_{str(level)} = True WHERE Login = '{self.login}'""").fetchall()
-            con.commit()
-            con.close()
         if self.death_reason:
             dbs = db_session.create_session()
-            combo = Combo(
-                combo=get_unique_combo(),
-                username=self.login
-            )
-            dbs.add(combo)
             answer = dbs.query(Ending).filter(Ending.name == self.death_reason).first()
-            print(answer)
             passing = Passing(
                 ending_id=answer.id,
                 username=self.login
             )
             dbs.add(passing)
             dbs.commit()
-            url = f'https://a4bc-188-242-11-43.eu.ngrok.io/login_user/{combo.combo}'
+            combo = Combo(
+                combo=get_unique_combo(),
+                username=self.login,
+                passing_id=passing.id
+            )
+            dbs.add(combo)
+            dbs.commit()
+            url = f'https://a1b1-188-242-11-43.ngrok-free.app/login_user/{combo.combo}'
             self.death_reason = None
             await ctx.send('', components=[disnake.ui.Button(label="Результаты", url=url)])
             await ctx.send('Для того чтобы еще раз пройти лабиринт введите "/sign in Ваш логин Ваш пароль". \n'
@@ -657,7 +658,7 @@ class USER(commands.Cog):
 
 
 bot = commands.Bot(command_prefix='/', intents=disnake.Intents.all())
-TOKEN = "MTA5MjA3MTA4Mzg2MTEwMjY2Mg.GjgEvB.WSOWjODH-gFHwYUqTiO_tzMYuAvG-yIHpHQxjI"
+TOKEN = "MTA5MjA3MTA4Mzg2MTEwMjY2Mg.GBlyqY.qT4I3SBEtS842DCEUVAWoeXRNhWQCrWZ1fhIDM"
 
 
 @bot.event

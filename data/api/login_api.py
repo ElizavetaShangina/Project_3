@@ -18,6 +18,8 @@ blueprint = flask.Blueprint(
 
 
 def need_login(func):
+    """Проверка на авторизацию, с перенаправлением на страницу с авторизацией,
+    если пользователь не авторизован"""
     def worker(*args, **kwargs):
         if current_user.is_authenticated:
             return func(*args, **kwargs)
@@ -28,6 +30,7 @@ def need_login(func):
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
+    """Страница с регистрацией"""
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -50,6 +53,7 @@ def register():
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 def login():
+    """Страница с авторизацией"""
     if not current_user.is_authenticated:
         form = LoginForm()
         if form.validate_on_submit():
@@ -69,20 +73,20 @@ def login():
 @blueprint.route('/logout')
 @need_login
 def logout():
+    """Выход из учетной записи"""
     logout_user()
     return redirect("/login")
 
 
 @blueprint.route("/login_user/<string:combination>")
 def log_user(combination):
+    """Авторизация пользователя с помощью специального кода"""
     dbs = db_session.create_session()
     combo = dbs.query(Combo).filter(Combo.combo == combination).first()
     if combo:
         login_user(combo.user)
         dbs.delete(combo)
         dbs.commit()
-        last_passing = sorted(dbs.query(Passing).filter(Passing.username == current_user.name).all(),
-                              key=lambda x: x.date, reverse=True)[0].id
-        return redirect(f"/passings/{last_passing}")
+        return redirect(f"/passings/{combo.passing_id}")
     else:
         return bad_site(message="Ссылка уже была использована или ссылка является неправильной")

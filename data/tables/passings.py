@@ -6,6 +6,7 @@ from datetime import datetime
 
 
 class Passing(SqlAlchemyBase, SerializerMixin):
+    """Прохождения (прохождения != концовки)"""
     __tablename__ = 'passings'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -14,4 +15,5 @@ class Passing(SqlAlchemyBase, SerializerMixin):
     username = sqlalchemy.Column(sqlalchemy.String, sqlalchemy.ForeignKey("users.name"))
     date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.now())
     ending = orm.relationship('Ending')
+    combo = orm.relationship('Combo', back_populates="passing")
     user = orm.relationship("User")

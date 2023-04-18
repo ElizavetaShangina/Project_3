@@ -9,9 +9,11 @@ from data.tables.combos import Combo
 from data.tables.passings import Passing
 from data.tables.reviews import Review
 from data.additional import bad_site, get_menu_btns
+from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
 api = Api(app)
+run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -27,16 +29,19 @@ def load_user(user_id):
 
 @app.errorhandler(404)
 def not_found(_):
+    """Если страница не найдена"""
     return bad_site(404, title="Такой страницы нет", message="Страница не найдена")
 
 
 @app.route("/")
 def empty():
+    """Просто страница для перенаправления"""
     return redirect("/passings")
 
 
 @app.route("/about")
 def about():
+    """Страница об общих сведениях"""
     return render_template("about.html", title="О проекте", menu=get_menu_btns())
 
 

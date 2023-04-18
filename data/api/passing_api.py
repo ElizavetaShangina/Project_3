@@ -23,6 +23,7 @@ blueprint = flask.Blueprint(
 @blueprint.route("/passings/<int:passing_id>", methods=["GET", "POST"])
 @need_login
 def get_passing(passing_id):
+    """Страница с одним прохождением и комментариями к проекту"""
     dbs = db_session.create_session()
     passing = dbs.query(Passing).get(passing_id)
     if not passing or passing.username != current_user.name:
@@ -48,6 +49,7 @@ def get_passing(passing_id):
 @blueprint.route("/", methods=["GET", "POST"])
 @need_login
 def get_passings():
+    """Страница со всеми прохождениями пользователя"""
     dbs = db_session.create_session()
     form = SortForm()
     func = {"id": lambda x: x.id,

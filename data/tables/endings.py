@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Ending(SqlAlchemyBase, SerializerMixin):
+    """Концовки (прохождения != концовки)"""
     __tablename__ = 'endings'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
