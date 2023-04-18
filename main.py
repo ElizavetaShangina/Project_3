@@ -9,11 +9,9 @@ from data.tables.combos import Combo
 from data.tables.passings import Passing
 from data.tables.reviews import Review
 from data.additional import bad_site, get_menu_btns
-from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
 api = Api(app)
-run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
