@@ -44,7 +44,7 @@ def about():
 
 
 def main():
-    db_session.global_init("db/blogs.db")
+    db_session.global_init("db/labirint.db")
     app.register_blueprint(passing_api.blueprint)
     app.register_blueprint(login_api.blueprint)
     app.run()
