@@ -1,13 +1,8 @@
-from flask import Flask, render_template, redirect, make_response, jsonify, request, url_for
-from flask_login import LoginManager, login_user, current_user, login_required, logout_user
-from flask_restful import abort, Api
+from flask import Flask, render_template, redirect
+from flask_login import LoginManager
+from flask_restful import Api
 from data import db_session
-from forms.user import LoginForm, RegisterForm
-from forms.ending import EndingForm
 from data.tables.users import User
-from data.tables.combos import Combo
-from data.tables.passings import Passing
-from data.tables.reviews import Review
 from data.additional import bad_site, get_menu_btns
 from threading import Thread
 

@@ -683,7 +683,7 @@ class USER(commands.Cog):
             )
             dbs.add(combo)
             dbs.commit()
-            url = f'https://a1b1-188-242-11-43.ngrok-free.app/login_user/{combo.combo}'
+            url = f'https://labirint.endings.repl.co/login_user/{combo.combo}'
             self.death_reason = None
             await ctx.send('', components=[disnake.ui.Button(label="Результаты", url=url)])
             await ctx.send(

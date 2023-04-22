@@ -1,12 +1,11 @@
 import flask
 from flask import render_template, redirect
+from flask_login import current_user, login_user, logout_user
 
 from data import db_session
 from data.tables.users import User
-from data.tables.passings import Passing
 from data.tables.combos import Combo
 from forms.user import LoginForm, RegisterForm
-from main import current_user, login_user, logout_user
 from data.additional import bad_site, get_menu_btns
 
 
