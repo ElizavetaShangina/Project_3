@@ -9,6 +9,7 @@ from data.tables.combos import Combo
 from data.tables.passings import Passing
 from data.tables.reviews import Review
 from data.additional import bad_site, get_menu_btns
+from threading import Thread
 
 app = Flask(__name__)
 api = Api(app)
@@ -47,7 +48,12 @@ def main():
     db_session.global_init("db/labirint.db")
     app.register_blueprint(passing_api.blueprint)
     app.register_blueprint(login_api.blueprint)
-    app.run()
+    app.run(host='0.0.0.0', port=80)
+
+
+def start():
+    t = Thread(target=main)
+    t.start()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 import disnake
 from disnake.ext import commands
-from main import db_session
+from main import db_session, start
 from data.tables.users import User
 from data.tables.combos import Combo
 from data.tables.passings import Passing
@@ -13,6 +13,7 @@ db_session.global_init("db/labirint.db")
 
 class ThreeDirectionButtons(disnake.ui.View):
     """Выбор из трех кнопок-направлений"""
+
     def __init__(self):
         super().__init__(timeout=None)
         self.value = None
@@ -41,6 +42,7 @@ class ThreeDirectionButtons(disnake.ui.View):
 
 class TwoDirectionButtons(disnake.ui.View):
     """Выбор из двух кнопок-направлений"""
+
     def __init__(self):
         super().__init__(timeout=None)
         self.value = None
@@ -62,6 +64,7 @@ class TwoDirectionButtons(disnake.ui.View):
 
 class ThreeDoorButtons(disnake.ui.View):
     """Выбор из трех кнопок-дверей"""
+
     def __init__(self):
         super().__init__(timeout=None)
         self.value = None
@@ -90,6 +93,7 @@ class ThreeDoorButtons(disnake.ui.View):
 
 class TwoDoorButtons(disnake.ui.View):
     """Выбор из двух кнопок-дверей"""
+
     def __init__(self):
         super().__init__(timeout=None)
         self.value = None
@@ -111,6 +115,7 @@ class TwoDoorButtons(disnake.ui.View):
 
 class Dropdown(disnake.ui.StringSelect):
     """Выбор сложности"""
+
     def __init__(self):
         options = [
             disnake.SelectOption(label="Уровень 1", description="Для новичков и неуверенных "
@@ -137,6 +142,7 @@ class DropdownView(disnake.ui.View):
 
 class USER(commands.Cog):
     """Главный класс с командами и, собственно, игрой"""
+
     def __init__(self, bot):
         self.bot = bot
         self.death_reason = ""
@@ -752,8 +758,9 @@ class USER(commands.Cog):
         return
 
 
+start()
 bot = commands.Bot(command_prefix='/', intents=disnake.Intents.all())
-TOKEN = "MTA5MjA3MTA4Mzg2MTEwMjY2Mg.GIuQh_.yD3rRyrnK642e0kKosaJvzbS3PYvL0S_CALR7c"
+TOKEN = ""  # в replit здесь 'TOKEN = os.getenv('token')'
 
 
 @bot.event

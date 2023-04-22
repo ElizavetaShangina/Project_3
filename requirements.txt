@@ -1,5 +1,5 @@
 Flask~=2.2.3
-SQLAlchemy~=2.0.5.post1
+SQLAlchemy~=2.0.5
 Werkzeug~=2.2.3
 WTForms~=3.0.1
 disnake~=2.8.1
