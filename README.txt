@@ -1,4 +1,6 @@
 https://discord.com/api/oauth2/authorize?client_id=1092071083861102662&permissions=8&scope=bot
+https://labirint.endings.repl.co
+https://replit.com/@endings/labirint
 Аккаунты с прохождениями для удобства:
     Логины  Пароли
     last    -1
