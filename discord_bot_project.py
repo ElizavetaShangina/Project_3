@@ -763,7 +763,7 @@ class USER(commands.Cog):
 
 start()
 bot = commands.Bot(command_prefix='/', intents=disnake.Intents.all())
-TOKEN = "MTA5MjA3MTA4Mzg2MTEwMjY2Mg.GB33MG.MKxuMZz0LJyuf8C5kNSnCAv4sOucJtIqr3YdO8"  # в replit здесь 'TOKEN = os.getenv('token')'
+TOKEN = ""  # в replit здесь 'TOKEN = os.getenv('token')'
 
 
 @bot.event
