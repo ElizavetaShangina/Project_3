@@ -8,3 +8,4 @@ https://replit.com/@endings/labirint
     second  2
     third   3
 Программа должна запускаться с discord_bot_project.py, несмотря на то что здесь есть main.py (просто он является главным для сайта)
+На replit и в github немного разные БД, но я не думаю, что это проблема

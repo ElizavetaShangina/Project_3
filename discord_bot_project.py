@@ -684,6 +684,9 @@ class USER(commands.Cog):
             dbs.add(combo)
             dbs.commit()
             url = f'https://labirint.endings.repl.co/login_user/{combo.combo}'
+            # если проект запущен локально, а не через хостинг
+            # то f'http://127.0.0.1/login_user/{combo.combo}',
+            # чтобы ссылка работала, так как БД у replit и github разные
             self.death_reason = None
             await ctx.send('', components=[disnake.ui.Button(label="Результаты", url=url)])
             await ctx.send(
@@ -760,7 +763,7 @@ class USER(commands.Cog):
 
 start()
 bot = commands.Bot(command_prefix='/', intents=disnake.Intents.all())
-TOKEN = ""  # в replit здесь 'TOKEN = os.getenv('token')'
+TOKEN = "MTA5MjA3MTA4Mzg2MTEwMjY2Mg.GB33MG.MKxuMZz0LJyuf8C5kNSnCAv4sOucJtIqr3YdO8"  # в replit здесь 'TOKEN = os.getenv('token')'
 
 
 @bot.event
